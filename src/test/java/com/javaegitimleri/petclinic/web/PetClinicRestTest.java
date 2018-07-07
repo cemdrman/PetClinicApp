@@ -1,5 +1,7 @@
 package com.javaegitimleri.petclinic.web;
 
+import java.net.URI;
+
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Before;
@@ -22,6 +24,20 @@ public class PetClinicRestTest {
 	public void testGetOwnerById() {
 		ResponseEntity<Owner> response = restTemplate.getForEntity("http://localhost:8080/rest/owner/5", Owner.class);
 		MatcherAssert.assertThat(response.getStatusCodeValue(), Matchers.equalTo(200));
+	}
+	
+	@Test
+	public void testCreateOwner() {
+		Owner owner = new Owner();
+		owner.setFirstName("cem");
+		owner.setLastName("dırman");		
+		
+		URI location = restTemplate.postForLocation("http://localhost:8080/rest/owner", owner);
+		
+		//Owner owner2 = restTemplate.getForObject(location, Owner.class);
+		
+		//MatcherAssert.assertThat(owner2.getFirstName(), Matchers.equalTo(owner.getFirstName()));
+		
 	}
 
 }
