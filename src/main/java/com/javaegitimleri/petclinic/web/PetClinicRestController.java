@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -57,6 +58,31 @@ public class PetClinicRestController {
 		} catch (OwnerNotFoundException e) {
 			return ResponseEntity.notFound().build();
 		}		
+	}
+	
+	@RequestMapping(method = RequestMethod.PUT, value = "/owner/{id}")
+	public ResponseEntity<?> updateOwner(@PathVariable("id") Long id, @RequestBody Owner ownerRequest) {
+		try {
+			Owner owner = petService.findOwner(id);
+			owner.setFirstName(ownerRequest.getFirstName());
+			owner.setLastName(ownerRequest.getLastName());
+			petService.updateOwner(owner);
+			return ResponseEntity.ok().build();
+		} catch (OwnerNotFoundException ex) {
+			return ResponseEntity.notFound().build();
+		} catch (Exception ex) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
+	}
+	
+	@RequestMapping(method = RequestMethod.DELETE, value = "/owner/{id}")
+	@ResponseStatus(HttpStatus.OK)
+	public void deleteOwner(@PathVariable("id") Long id) {
+		try {
+			petService.deleteOwner(id);
+		} catch (OwnerNotFoundException ex) {
+			throw ex;
+		} 
 	}
 	
 }
